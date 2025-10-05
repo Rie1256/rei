@@ -1,1 +1,37 @@
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Image, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+
+def create_pdf(filename, title_message, body_message, image_paths):
+    pdf = SimpleDocTemplate(filename, pagesize=A4)
+    styles = getSampleStyleSheet()
+    story = []
+
+    story.append(Paragraph(f"<b>{title_message}</b>", styles['Title']))
+    story.append(Spacer(1, 20))
+    story.append(Paragraph(body_message, styles['Normal']))
+    story.append(Spacer(1, 20))
+
+    for img_path in image_paths:
+        try:
+            img = Image(img_path)
+            img.drawHeight = 3 * inch
+            img.drawWidth = 3 * inch
+            story.append(img)
+            story.append(Spacer(1, 20))
+        except:
+            story.append(Paragraph(f"Could not load image: {img_path}", styles['Normal']))
+            story.append(Spacer(1, 10))
+
+    pdf.build(story)
+
+if __name__ == "__main__":
+    filename = "birthday_memory.pdf"
+    title = "Happy Birthday and Our First Year!"
+    message = "Happy birthday! Today marks one year since the day I met you — on your birthday. I’m grateful for that day and for every moment since. Wishing you all the happiness in the world!"
+    images = ["photo1.jpg", "photo2.jpg"]
+
+    create_pdf(filename, title, message, images)
+
 
